@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<beans xmlns="http://www.springframework.org/schema/beans"-->
+<!--       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">-->
+
+<!--</beans>-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--mapper 의 namespace 의 값은 interface 인 mapper 의 위치와 같아야한다.-->
+<mapper namespace="com.example.profile.service.mapper.MainMapper">
+
+
+    <select id="getCount" resultType="int">
+        select count(*) from user;
+    </select>
+    <select id="getNames" resultType="int">
+        select count(*) from items;
+    </select>
+    <select id="getWorkoutList" resultType="Map">
+        select
+            rt.id as id,
+            rt.date as date,
+            u.name as name,
+            pt.name as categoryName,
+            wt.name as workoutName,
+            rt.weight as weight,
+            rt.reps as reps
+
+        FROM record_today rt
+
+        inner join user u on rt.user_id = u.id
+        left join part_type pt on rt.cat_id = pt.id
+        left join workout_type wt on  rt.cat_id = wt.cat_id  and  rt.workout_id = wt.id ;
+    </select>
+
+
+    <insert id="addUserRecord" parameterType="Map">
+        INSERT INTO record_today (user_Id,`date`,workout_id,cat_id,`name`,weight,reps)
+        VALUES (#{userId},now(),#{workoutId},#{categoryId},#{name},#{weight},#{reps})
+
+    </insert>
+
+    <insert id="signUp" parameterType="Map">
+        INSERT INTO user (`signUpDate`,`name`,`email`,`password`,`phone`,height,weight)
+        VALUES (now(),#{name},#{email},#{password},#{phone},#{height},#{weight})
+    </insert>
+
+
+</mapper>
